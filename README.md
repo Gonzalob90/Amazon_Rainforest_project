@@ -30,12 +30,17 @@ appears in less than 1% of images.
 
 ## Model
 
+As our starting point, we train a very simple CNN with 3 convolutional layers each followed by a max pooling layer. The first convolutional
+layer is given 16 filters with the number of filters doubling in each subsequent layer. Each max pooling layer has a pool size of 2. Finally, before the output layer we have a global average pooling layer. With regards to activation functions and weight initialisation, we
+use RELUs for all layers bar the output layer. The output layer uses a sigmoid activation function. We choose the sigmoid as opposed to softmax as using a softmax assumes the probabilities of each of the classes are dependent, that means that the classes should mutually exclusive if we consider softmax as the activation function of the last fully connected layer. Below, we see the architecture for our baseline.
+
 <br>
 <p align="center">
 <img src=misc/CNN.png>
 </p>
 <br>
 
+We decided to use to do transfer learning by using the VGG architecture and pretrained weights. The input and output layers of the pretrained model is removed and replaced by one suited to the new classification problem that the model is being applied to. Furthermore, with fine tuning, we do not simply use the pretrained weights as received but instead conduct further training after initialising from the pretrained weights.This can be done for a subset of the layers in the original model or for all layers. In our case we retrain the weights for all layers. Below, we see our architecture for transfer learning.
 
 <br>
 <p align="center">
@@ -45,12 +50,15 @@ appears in less than 1% of images.
 
 ## Results
 
+We present below the training plot for the VGG model. Notably, we used early stopping for this model before it overfits.
+
 <br>
 <p align="center">
 <img src=misc/training.png>
 </p>
 <br>
 
+We present below the confusion matrix related to this model. 
 
 <br>
 <p align="center">
@@ -58,13 +66,19 @@ appears in less than 1% of images.
 </p>
 <br>
 
+Below, we see the table with the results. The primary reason for using the F2 score over the F1 score is the imbalanced nature of our dataset. Certain labels are prevalent in the training set and our model will perform well in classifying images with these labels. On the other hand, the model is likely to perform poorly for the less prevalent labels and there is likely to be many false negatives for those labels. However, due to the imbalance in the dataset, there will be many more true positives than false negatives. We therefore use the F2 score to provide greater emphasis on recall and occurrences of false negatives. The F2 score is a good indicator of the overall performance of our models, but we also examine confusion matrices to better appreciate how well our models are performing for each particular label. 
+
 <br>
 <p align="center">
 <img src=misc/table.png>
 </p>
 <br>
 
+Without any doubt, the VGG model perfomed better.
+
 ## Further ideas
+
+We propose the use of three networks. One for weather conditions, one for common cover/land use and one for rare cover/land use. Unlike (Liang & Tang, 2017), we do not have just the one network for cover/land use. Our motivation is that common and rare cover/land use may have different features, so having separate networks may allow them to better identify features specific to their respective labels.
 
 <br>
 <p align="center">
